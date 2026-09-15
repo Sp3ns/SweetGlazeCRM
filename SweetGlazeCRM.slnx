@@ -2,5 +2,5 @@
   <Project Path="SweetGlazeCRM.api/SweetGlazeCRM.api.csproj" />
   <Project Path="SweetGlazeCRM.domain/SweetGlazeCRM.domain.csproj" />
   <Project Path="SweetGlazeCRM.infrastructure/SweetGlazeCRM.infrastructure.csproj" />
-  <Project Path="SweetGlazeCRM/SweetGlazeCRM.winforms.csproj" />
+  <Project Path="SweetGlazeCRM.winform/SweetGlazeCRM.winform.csproj" Id="dc826447-5d96-41a0-8025-0c6e6ca060fd" />
 </Solution>

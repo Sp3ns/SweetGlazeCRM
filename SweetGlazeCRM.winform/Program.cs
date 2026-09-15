@@ -1,4 +1,4 @@
-    namespace SweetGlazeCRM
+namespace SweetGlazeCRM.winform
 {
     internal static class Program
     {

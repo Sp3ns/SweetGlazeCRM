@@ -1,4 +1,4 @@
-﻿namespace SweetGlazeCRM
+﻿namespace SweetGlazeCRM.winform
 {
     partial class Form1
     {
