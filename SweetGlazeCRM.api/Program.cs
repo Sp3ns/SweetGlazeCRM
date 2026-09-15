@@ -65,7 +65,7 @@ app.MapPost("/devices", async (
 {
     db.Devices.Add(device);
 
-     await db.SaveChangesAsync();
+    await db.SaveChangesAsync();
 
     return Results.Created(
         $"/devices/{device.DeviceId}",
@@ -91,7 +91,10 @@ app.MapPost("/company-databases", async (
 });
 
 
+// =====================================================
 // DEBUG TENANT DATABASE INFO
+// =====================================================
+
 app.MapGet("/debug-tenant/{companyId:int}", async (
     int companyId,
     ITenantDatabaseResolver resolver) =>
@@ -106,6 +109,8 @@ app.MapGet("/debug-tenant/{companyId:int}", async (
         credentialKey = info.CredentialKey
     });
 });
+
+
 // =====================================================
 // TEST TENANT DATABASE CONNECTION
 // =====================================================
@@ -169,31 +174,51 @@ app.MapGet("/tenant/{companyId:int}/products", async (
     return Results.Ok(products);
 });
 
-//Create
 
-app.MapPost("/api/customers", async (
+// =====================================================
+// CUSTOMER CRUD
+// =====================================================
+
+
+// =====================================================
+// CREATE TENANT CUSTOMER
+// =====================================================
+
+app.MapPost("/tenant/{companyId:int}/customers", async (
+    int companyId,
     Customer customer,
-    TenantCRMDbContext db) =>
+    ITenantDbContextFactory tenantFactory) =>
 {
     customer.Id = 0;
     customer.CreatedAt = DateTime.UtcNow;
     customer.UpdatedAt = null;
     customer.IsActive = true;
 
-    db.Customers.Add(customer);
-    await db.SaveChangesAsync();
+    await using var tenantDb =
+        await tenantFactory.CreateAsync(companyId);
+
+    tenantDb.Customers.Add(customer);
+
+    await tenantDb.SaveChangesAsync();
 
     return Results.Created(
-        $"/api/customers/{customer.Id}",
+        $"/tenant/{companyId}/customers/{customer.Id}",
         customer);
 });
 
-//read all costumers
 
-app.MapGet("/api/customers", async (
-    TenantCRMDbContext db) =>
+// =====================================================
+// GET ALL TENANT CUSTOMERS
+// =====================================================
+
+app.MapGet("/tenant/{companyId:int}/customers", async (
+    int companyId,
+    ITenantDbContextFactory tenantFactory) =>
 {
-    var customers = await db.Customers
+    await using var tenantDb =
+        await tenantFactory.CreateAsync(companyId);
+
+    var customers = await tenantDb.Customers
         .AsNoTracking()
         .OrderBy(x => x.Id)
         .ToListAsync();
@@ -201,34 +226,52 @@ app.MapGet("/api/customers", async (
     return Results.Ok(customers);
 });
 
-//read costumer id
 
-app.MapGet("/api/customers/{id:int}", async (
+// =====================================================
+// GET TENANT CUSTOMER BY ID
+// =====================================================
+
+app.MapGet("/tenant/{companyId:int}/customers/{id:int}", async (
+    int companyId,
     int id,
-    TenantCRMDbContext db) =>
+    ITenantDbContextFactory tenantFactory) =>
 {
-    var customer = await db.Customers
+    await using var tenantDb =
+        await tenantFactory.CreateAsync(companyId);
+
+    var customer = await tenantDb.Customers
         .AsNoTracking()
         .FirstOrDefaultAsync(x => x.Id == id);
 
     if (customer == null)
+    {
         return Results.NotFound("Customer not found.");
+    }
 
     return Results.Ok(customer);
 });
 
-//update
 
-app.MapPut("/api/customers/{id:int}", async (
+// =====================================================
+// UPDATE TENANT CUSTOMER
+// =====================================================
+
+app.MapPut("/tenant/{companyId:int}/customers/{id:int}", async (
+    int companyId,
     int id,
     Customer updatedCustomer,
-    TenantCRMDbContext db) =>
+    ITenantDbContextFactory tenantFactory) =>
 {
-    var customer = await db.Customers
+    await using var tenantDb =
+        await tenantFactory.CreateAsync(companyId);
+
+    var customer = await tenantDb.Customers
         .FirstOrDefaultAsync(x => x.Id == id);
 
     if (customer == null)
+    {
         return Results.NotFound("Customer not found.");
+    }
 
     customer.FirstName = updatedCustomer.FirstName;
     customer.LastName = updatedCustomer.LastName;
@@ -240,28 +283,38 @@ app.MapPut("/api/customers/{id:int}", async (
     customer.IsActive = updatedCustomer.IsActive;
     customer.UpdatedAt = DateTime.UtcNow;
 
-    await db.SaveChangesAsync();
+    await tenantDb.SaveChangesAsync();
 
     return Results.Ok(customer);
 });
 
-//delete
 
-app.MapDelete("/api/customers/{id:int}", async (
+// =====================================================
+// DELETE TENANT CUSTOMER
+// =====================================================
+
+app.MapDelete("/tenant/{companyId:int}/customers/{id:int}", async (
+    int companyId,
     int id,
-    TenantCRMDbContext db) =>
+    ITenantDbContextFactory tenantFactory) =>
 {
-    var customer = await db.Customers
+    await using var tenantDb =
+        await tenantFactory.CreateAsync(companyId);
+
+    var customer = await tenantDb.Customers
         .FirstOrDefaultAsync(x => x.Id == id);
 
     if (customer == null)
+    {
         return Results.NotFound("Customer not found.");
+    }
 
-    db.Customers.Remove(customer);
+    tenantDb.Customers.Remove(customer);
 
-    await db.SaveChangesAsync();
+    await tenantDb.SaveChangesAsync();
 
     return Results.Ok("Customer deleted successfully.");
 });
+
 
 app.Run();

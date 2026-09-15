@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SweetGlazeCRM.domain.Entities;
-using SweetGlazeCRM.infrastructure.data.Configuration;
 
 namespace SweetGlazeCRM.infrastructure.data
 {
@@ -19,7 +18,7 @@ namespace SweetGlazeCRM.infrastructure.data
 
         public DbSet<Device> Devices => Set<Device>();
 
-        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Customer> Customers => Set<Customer>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -84,7 +83,40 @@ namespace SweetGlazeCRM.infrastructure.data
             });
 
             // Customer
-            builder.ApplyConfiguration(new CustomerConfiguration());
+            builder.Entity<Customer>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.FirstName)
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.Property(x => x.LastName)
+                    .HasMaxLength(100)
+                    .IsRequired();
+
+                entity.Property(x => x.Email)
+                    .HasMaxLength(150)
+                    .IsRequired();
+
+                entity.Property(x => x.PhoneNumber)
+                    .HasMaxLength(20);
+
+                entity.Property(x => x.CompanyName)
+                    .HasMaxLength(150);
+
+                entity.Property(x => x.Address)
+                    .HasMaxLength(250);
+
+                entity.Property(x => x.Notes)
+                    .HasMaxLength(500);
+
+                entity.Property(x => x.IsActive)
+                    .IsRequired();
+
+                entity.Property(x => x.CreatedAt)
+                    .IsRequired();
+            });
         }
     }
 }
