@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SweetGlazeCRM.domain.entities;
 using SweetGlazeCRM.domain.Entities;
 
 namespace SweetGlazeCRM.infrastructure.data
@@ -12,13 +13,13 @@ namespace SweetGlazeCRM.infrastructure.data
         }
 
         public DbSet<Product> Products => Set<Product>();
-
         public DbSet<Customer> Customers => Set<Customer>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            // PRODUCT
             builder.Entity<Product>(entity =>
             {
                 entity.HasKey(x => x.ProductId);
@@ -38,6 +39,7 @@ namespace SweetGlazeCRM.infrastructure.data
                     .IsUnique();
             });
 
+            // CUSTOMER
             builder.Entity<Customer>(entity =>
             {
                 entity.HasKey(x => x.Id);
@@ -71,6 +73,9 @@ namespace SweetGlazeCRM.infrastructure.data
 
                 entity.Property(x => x.CreatedAt)
                     .IsRequired();
+
+                entity.Property(x => x.UpdatedAt)
+                    .IsRequired(false);
             });
         }
     }

@@ -13,13 +13,8 @@ namespace SweetGlazeCRM.infrastructure.data
         }
 
         public DbSet<Company> Companies => Set<Company>();
-
         public DbSet<CompanyDatabase> CompanyDatabases => Set<CompanyDatabase>();
-
         public DbSet<Device> Devices => Set<Device>();
-
-        public DbSet<Customer> Customers => Set<Customer>();
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -82,41 +77,7 @@ namespace SweetGlazeCRM.infrastructure.data
                     .IsUnique();
             });
 
-            // Customer
-            builder.Entity<Customer>(entity =>
-            {
-                entity.HasKey(x => x.Id);
 
-                entity.Property(x => x.FirstName)
-                    .HasMaxLength(100)
-                    .IsRequired();
-
-                entity.Property(x => x.LastName)
-                    .HasMaxLength(100)
-                    .IsRequired();
-
-                entity.Property(x => x.Email)
-                    .HasMaxLength(150)
-                    .IsRequired();
-
-                entity.Property(x => x.PhoneNumber)
-                    .HasMaxLength(20);
-
-                entity.Property(x => x.CompanyName)
-                    .HasMaxLength(150);
-
-                entity.Property(x => x.Address)
-                    .HasMaxLength(250);
-
-                entity.Property(x => x.Notes)
-                    .HasMaxLength(500);
-
-                entity.Property(x => x.IsActive)
-                    .IsRequired();
-
-                entity.Property(x => x.CreatedAt)
-                    .IsRequired();
-            });
         }
     }
 }

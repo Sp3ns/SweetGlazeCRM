@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace SweetGlazeCRM.domain.Entities
+namespace SweetGlazeCRM.domain.entities
 {
     public class Customer
     {

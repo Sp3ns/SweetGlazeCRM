@@ -1,46 +1,49 @@
 using Microsoft.EntityFrameworkCore;
+using SweetGlazeCRM.domain.entities;
 using SweetGlazeCRM.domain.Entities;
 using SweetGlazeCRM.infrastructure.data;
 using SweetGlazeCRM.infrastructure.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// MASTER DATABASE
 builder.Services.AddDbContext<MasterCRMDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("MasterCRM")));
 
+// TENANT SERVICES
 builder.Services.AddScoped<ITenantDatabaseResolver, TenantDatabaseResolver>();
 builder.Services.AddScoped<ITenantDbContextFactory, TenantDbContextFactory>();
 
+// TENANT DATABASE
 builder.Services.AddDbContext<TenantCRMDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("TenantCRM")));
 
-// Add services to the container.
+// CONTROLLERS
 builder.Services.AddControllers();
 
-// OpenAPI
+// OPENAPI
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
 
-// =====================================================
-// CREATE COMPANY
-// =====================================================
+// ======================================================
+// MASTER DATABASE
+// ======================================================
 
+// CREATE COMPANY
 app.MapPost("/companies", async (
     Company company,
     MasterCRMDbContext db) =>
@@ -55,10 +58,7 @@ app.MapPost("/companies", async (
 });
 
 
-// =====================================================
 // CREATE DEVICE
-// =====================================================
-
 app.MapPost("/devices", async (
     Device device,
     MasterCRMDbContext db) =>
@@ -73,10 +73,7 @@ app.MapPost("/devices", async (
 });
 
 
-// =====================================================
 // CREATE COMPANY DATABASE
-// =====================================================
-
 app.MapPost("/company-databases", async (
     CompanyDatabase companyDatabase,
     MasterCRMDbContext db) =>
@@ -91,10 +88,11 @@ app.MapPost("/company-databases", async (
 });
 
 
-// =====================================================
-// DEBUG TENANT DATABASE INFO
-// =====================================================
+// ======================================================
+// TENANT DATABASE TESTING
+// ======================================================
 
+// DEBUG TENANT DATABASE INFO
 app.MapGet("/debug-tenant/{companyId:int}", async (
     int companyId,
     ITenantDatabaseResolver resolver) =>
@@ -111,10 +109,7 @@ app.MapGet("/debug-tenant/{companyId:int}", async (
 });
 
 
-// =====================================================
 // TEST TENANT DATABASE CONNECTION
-// =====================================================
-
 app.MapGet("/test-tenant/{companyId:int}", async (
     int companyId,
     ITenantDbContextFactory tenantFactory) =>
@@ -133,10 +128,11 @@ app.MapGet("/test-tenant/{companyId:int}", async (
 });
 
 
-// =====================================================
-// CREATE TENANT PRODUCT
-// =====================================================
+// ======================================================
+// TENANT PRODUCT
+// ======================================================
 
+// CREATE TENANT PRODUCT
 app.MapPost("/tenant/{companyId:int}/products", async (
     int companyId,
     Product product,
@@ -155,10 +151,7 @@ app.MapPost("/tenant/{companyId:int}/products", async (
 });
 
 
-// =====================================================
 // GET TENANT PRODUCTS
-// =====================================================
-
 app.MapGet("/tenant/{companyId:int}/products", async (
     int companyId,
     ITenantDbContextFactory tenantFactory) =>
@@ -175,15 +168,11 @@ app.MapGet("/tenant/{companyId:int}/products", async (
 });
 
 
-// =====================================================
-// CUSTOMER CRUD
-// =====================================================
+// ======================================================
+// TENANT CUSTOMER CRUD
+// ======================================================
 
-
-// =====================================================
 // CREATE TENANT CUSTOMER
-// =====================================================
-
 app.MapPost("/tenant/{companyId:int}/customers", async (
     int companyId,
     Customer customer,
@@ -207,10 +196,7 @@ app.MapPost("/tenant/{companyId:int}/customers", async (
 });
 
 
-// =====================================================
 // GET ALL TENANT CUSTOMERS
-// =====================================================
-
 app.MapGet("/tenant/{companyId:int}/customers", async (
     int companyId,
     ITenantDbContextFactory tenantFactory) =>
@@ -227,10 +213,7 @@ app.MapGet("/tenant/{companyId:int}/customers", async (
 });
 
 
-// =====================================================
 // GET TENANT CUSTOMER BY ID
-// =====================================================
-
 app.MapGet("/tenant/{companyId:int}/customers/{id:int}", async (
     int companyId,
     int id,
@@ -252,10 +235,7 @@ app.MapGet("/tenant/{companyId:int}/customers/{id:int}", async (
 });
 
 
-// =====================================================
 // UPDATE TENANT CUSTOMER
-// =====================================================
-
 app.MapPut("/tenant/{companyId:int}/customers/{id:int}", async (
     int companyId,
     int id,
@@ -289,10 +269,7 @@ app.MapPut("/tenant/{companyId:int}/customers/{id:int}", async (
 });
 
 
-// =====================================================
 // DELETE TENANT CUSTOMER
-// =====================================================
-
 app.MapDelete("/tenant/{companyId:int}/customers/{id:int}", async (
     int companyId,
     int id,
