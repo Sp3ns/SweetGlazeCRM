@@ -1,0 +1,83 @@
+@SweetGlazeCRM.api_HostAddress = http://localhost:5101
+
+GET {{SweetGlazeCRM.api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+POST {{SweetGlazeCRM.api_HostAddress}}/companies
+Content-Type: application/json
+
+{
+  "companyCode": "Test120",
+  "companyName": "Connecttion test",
+  "isActive": true,
+  "createdAt": "2026-09-10T09:15:00"
+}
+
+###
+
+POST {{SweetGlazeCRM.api_HostAddress}}/devices
+Content-Type: application/json
+
+{
+  "companyId": 8,
+  "deviceCode": "DEV001",
+  "deviceName": "Main PC",
+  "isActive": true,
+  "createdAt": "2026-09-10T09:50:00"
+}
+
+###
+
+POST {{SweetGlazeCRM.api_HostAddress}}/company-databases
+Content-Type: application/json
+
+{
+  "companyId": 1,
+  "serverName": "db67572.public.databaseasp.net",
+  "databaseName": "db67572",
+  "credentialKey": "TenantA",
+  "isActive": true
+}
+
+###
+
+GET {{SweetGlazeCRM.api_HostAddress}}/test-tenant/1
+Accept: application/json
+
+###
+
+POST {{SweetGlazeCRM.api_HostAddress}}/tenant/1/products
+Content-Type: application/json
+
+{
+  "productCode": "PROD002",
+  "productName": "Demo Product",
+  "unitPrice": 99.50,
+  "isActive": true
+}
+
+
+###
+
+GET {{SweetGlazeCRM.api_HostAddress}}/debug-tenant/1
+Accept: application/json
+
+###
+
+GET {{SweetGlazeCRM.api_HostAddress}}/tenant/1/products
+Accept: application/json
+
+###
+
+
+POST {{SweetGlazeCRM.api_HostAddress}}/tenant/1/products
+Content-Type: application/json
+
+{
+  "productCode": "PROD001",
+  "productName": "Demo Product",
+  "unitPrice": 99.50,
+  "isActive": true
+}
