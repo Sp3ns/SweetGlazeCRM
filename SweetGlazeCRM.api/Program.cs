@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SweetGlazeCRM.domain.entities;
+using SweetGlazeCRM.domain.Entities;
 using SweetGlazeCRM.infrastructure.data;
 using SweetGlazeCRM.infrastructure.services;
 
@@ -169,5 +169,99 @@ app.MapGet("/tenant/{companyId:int}/products", async (
     return Results.Ok(products);
 });
 
+//Create
+
+app.MapPost("/api/customers", async (
+    Customer customer,
+    TenantCRMDbContext db) =>
+{
+    customer.Id = 0;
+    customer.CreatedAt = DateTime.UtcNow;
+    customer.UpdatedAt = null;
+    customer.IsActive = true;
+
+    db.Customers.Add(customer);
+    await db.SaveChangesAsync();
+
+    return Results.Created(
+        $"/api/customers/{customer.Id}",
+        customer);
+});
+
+//read all costumers
+
+app.MapGet("/api/customers", async (
+    TenantCRMDbContext db) =>
+{
+    var customers = await db.Customers
+        .AsNoTracking()
+        .OrderBy(x => x.Id)
+        .ToListAsync();
+
+    return Results.Ok(customers);
+});
+
+//read costumer id
+
+app.MapGet("/api/customers/{id:int}", async (
+    int id,
+    TenantCRMDbContext db) =>
+{
+    var customer = await db.Customers
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Id == id);
+
+    if (customer == null)
+        return Results.NotFound("Customer not found.");
+
+    return Results.Ok(customer);
+});
+
+//update
+
+app.MapPut("/api/customers/{id:int}", async (
+    int id,
+    Customer updatedCustomer,
+    TenantCRMDbContext db) =>
+{
+    var customer = await db.Customers
+        .FirstOrDefaultAsync(x => x.Id == id);
+
+    if (customer == null)
+        return Results.NotFound("Customer not found.");
+
+    customer.FirstName = updatedCustomer.FirstName;
+    customer.LastName = updatedCustomer.LastName;
+    customer.Email = updatedCustomer.Email;
+    customer.PhoneNumber = updatedCustomer.PhoneNumber;
+    customer.CompanyName = updatedCustomer.CompanyName;
+    customer.Address = updatedCustomer.Address;
+    customer.Notes = updatedCustomer.Notes;
+    customer.IsActive = updatedCustomer.IsActive;
+    customer.UpdatedAt = DateTime.UtcNow;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(customer);
+});
+
+//delete
+
+app.MapDelete("/api/customers/{id:int}", async (
+    int id,
+    TenantCRMDbContext db) =>
+{
+    var customer = await db.Customers
+        .FirstOrDefaultAsync(x => x.Id == id);
+
+    if (customer == null)
+        return Results.NotFound("Customer not found.");
+
+    db.Customers.Remove(customer);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok("Customer deleted successfully.");
+});
 
 app.Run();

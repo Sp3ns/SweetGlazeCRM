@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SweetGlazeCRM.domain.entities
+namespace SweetGlazeCRM.domain.Entities
 {
     public class CompanyDatabase
     {

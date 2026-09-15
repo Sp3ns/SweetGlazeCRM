@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SweetGlazeCRM.domain.entities;
+using SweetGlazeCRM.domain.Entities;
+using SweetGlazeCRM.infrastructure.data.Configuration;
 
 namespace SweetGlazeCRM.infrastructure.data
 {
     public class MasterCRMDbContext : IdentityDbContext
     {
         public MasterCRMDbContext(
-            DbContextOptions<MasterCRMDbContext> options) 
+            DbContextOptions<MasterCRMDbContext> options)
             : base(options)
         {
         }
@@ -17,6 +18,8 @@ namespace SweetGlazeCRM.infrastructure.data
         public DbSet<CompanyDatabase> CompanyDatabases => Set<CompanyDatabase>();
 
         public DbSet<Device> Devices => Set<Device>();
+
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -57,7 +60,8 @@ namespace SweetGlazeCRM.infrastructure.data
                     .HasForeignKey(x => x.CompanyId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
-            
+
+            // Device
             builder.Entity<Device>(entity =>
             {
                 entity.HasKey(x => x.DeviceId);
@@ -78,6 +82,9 @@ namespace SweetGlazeCRM.infrastructure.data
                 entity.HasIndex(x => new { x.CompanyId, x.DeviceCode })
                     .IsUnique();
             });
+
+            // Customer
+            builder.ApplyConfiguration(new CustomerConfiguration());
         }
     }
 }

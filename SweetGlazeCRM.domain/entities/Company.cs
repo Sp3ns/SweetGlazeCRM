@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SweetGlazeCRM.domain.entities
+namespace SweetGlazeCRM.domain.Entities
 {
     public class Company
     {
