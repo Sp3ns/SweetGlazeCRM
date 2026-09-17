@@ -257,7 +257,6 @@ app.MapPut("/tenant/{companyId:int}/customers/{id:int}", async (
     customer.LastName = updatedCustomer.LastName;
     customer.Email = updatedCustomer.Email;
     customer.PhoneNumber = updatedCustomer.PhoneNumber;
-    customer.CompanyName = updatedCustomer.CompanyName;
     customer.Address = updatedCustomer.Address;
     customer.Notes = updatedCustomer.Notes;
     customer.IsActive = updatedCustomer.IsActive;

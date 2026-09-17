@@ -23,9 +23,6 @@ namespace SweetGlazeCRM.domain.entities
         [MaxLength(20)]
         public string? PhoneNumber { get; set; }
 
-        [MaxLength(150)]
-        public string? CompanyName { get; set; }
-
         [MaxLength(250)]
         public string? Address { get; set; }
 

@@ -1,3 +1,5 @@
+using SweetGlazeCRM.winform.Forms;
+
 namespace SweetGlazeCRM.winform
 {
     internal static class Program
@@ -8,7 +10,7 @@ namespace SweetGlazeCRM.winform
             ApplicationConfiguration.Initialize();
 
             Application.Run(
-                new CustomerForm());
+                new MainForm());
         }
     }
 }

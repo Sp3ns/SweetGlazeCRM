@@ -1,14 +1,10 @@
-using System;
-
 namespace SweetGlazeCRM.winform.Models
 {
     /// <summary>
-    /// Mirrors the Customer entity returned by the API.
-    /// Deliberately does NOT include CompanyName - Customer has no company relationship.
+    /// The shape sent to the API for Create (POST) and Update (PUT).
     /// </summary>
-    public class Customer
+    public class CustomerRequest
     {
-        public int Id { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -16,11 +12,5 @@ namespace SweetGlazeCRM.winform.Models
         public string? Address { get; set; }
         public string? Notes { get; set; }
         public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-
-        public string FullName => $"{FirstName} {LastName}".Trim();
-
-        public string StatusText => IsActive ? "Active" : "Inactive";
     }
 }

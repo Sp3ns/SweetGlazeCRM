@@ -59,9 +59,6 @@ namespace SweetGlazeCRM.infrastructure.data
                 entity.Property(x => x.PhoneNumber)
                     .HasMaxLength(20);
 
-                entity.Property(x => x.CompanyName)
-                    .HasMaxLength(150);
-
                 entity.Property(x => x.Address)
                     .HasMaxLength(250);
 
